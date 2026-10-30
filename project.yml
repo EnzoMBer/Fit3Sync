@@ -1,0 +1,30 @@
+name: Fit3Sync
+options:
+  bundleIdPrefix: com.custom
+  deploymentTarget:
+    iOS: "16.0"
+targets:
+  Fit3Sync:
+    type: application
+    platform: iOS
+    sources:
+      - Fit3SyncApp.swift
+    info:
+      path: Info.plist
+      properties:
+        UILaunchScreen: {}
+        UIApplicationSupportsIndirectInputEvents: true
+        NSBluetoothAlwaysUsageDescription: "Necessário para conectar e manter a Galaxy Fit3 sincronizada em segundo plano."
+        NSBluetoothPeripheralUsageDescription: "Necessário para sincronizar o horário e notificações com a Galaxy Fit3."
+        NSHealthUpdateUsageDescription: "Necessário para gravar seus passos e batimentos no Apple Saúde."
+        NSHealthShareUsageDescription: "Necessário para atualizar suas métricas de saúde."
+        NSAppleMusicUsageDescription: "Necessário para controlar suas músicas pela pulseira."
+        UIBackgroundModes:
+          - bluetooth-central
+          - bluetooth-peripheral
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.custom.fit3sync
+      GENERATE_INFOPLIST_FILE: NO
+      CODE_SIGN_IDENTITY: ""
+      CODE_SIGNING_REQUIRED: NO
+      CODE_SIGNING_ALLOWED: NO

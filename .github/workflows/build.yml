@@ -1,0 +1,46 @@
+name: Gerar IPA Fit3Sync
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-ipa:
+    runs-on: macos-latest
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      - name: Ajustar compatibilidade de estilo SwiftUI
+        run: sed -i '' 's/\.BorderlessButtonStyle()/\.borderless/g' Fit3SyncApp.swift
+
+      - name: Garantir XcodeGen instalado
+        run: which xcodegen || brew install xcodegen
+
+      - name: Gerar projeto Xcode
+        run: xcodegen generate
+
+      - name: Compilar aplicativo para iOS
+        run: |
+          xcodebuild -project Fit3Sync.xcodeproj \
+            -scheme Fit3Sync \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            clean build
+
+      - name: Empacotar em formato IPA
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/Fit3Sync.app Payload/
+          zip -r Fit3Sync.ipa Payload
+
+      - name: Publicar arquivo IPA para download
+        uses: actions/upload-artifact@v4
+        with:
+          name: Fit3Sync-Instalador
+          path: Fit3Sync.ipa
